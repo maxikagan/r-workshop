@@ -1,0 +1,80 @@
+---
+title: "Pivot tables with dplyr"
+author: "Max Kagan"
+date: "6/12/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(readxl)
+library(here)
+library(skimr) # install.packages('skimr')
+library(kableExtra) # install.packages('kableExtra')
+```
+```{r readin}
+lobsters <- read_xlsx(here("data/lobsters.xlsx"), skip=4)
+```
+
+Reviewing data with skimr
+
+```{r}
+
+skimr::skim(lobsters)
+```
+
+Our goal: report how average size of lobsters has changed for each site, over time.
+
+Key to do this in dplyr is pipe operator %>%
+
+#### Grouping by one variable
+
+1. Group by year
+2. Summarize by count (using function n() )
+
+```{r}
+lobsters %>%
+  group_by(year) %>%
+  summarize(count_by_year = n())
+```
+
+#### Group by multiple variables
+
+Note: need to remove 'NA's first
+
+```{r}
+
+siteyear_summary <-
+  lobsters %>%
+  group_by(site, year) %>%
+  summarize(count_by_siteyear = n(),
+            mean_size_mm = mean(size_mm, na.rm=TRUE),
+            sd_size_mm = sd(size_mm, na.rm=TRUE)
+  )
+
+siteyear_summary
+```
+
+kable() can be used for table formatting
+
+```{r}
+siteyear_summary %>% 
+  kable()
+```
+
+There are `r nrow(lobsters)` total lobsters included in this report. Using the backtick allows you to write R code inside of Markdown.
+
+```{r}
+siteyear_summary <- 
+  lobsters %>%
+  group_by(site, year) %>%
+  summarize(count_by_siteyear = n(),
+             mean_size_mm = mean(size_mm, na.rm=TRUE),
+            sd_size_mm = sd(size_mm, na.rm=TRUE),
+            median_size_mm = median(size_mm, na.rm=TRUE)
+)
+
+ggplot(siteyear_summary, 
+       aes(x = year, y = median_size_mm, color=site)) + geom_line()
+)
+```

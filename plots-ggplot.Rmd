@@ -126,9 +126,48 @@ Can layer geoms on top of one another to customize
 gg_base + 
   geom_line(color = "purple") +
   geom_point(color = "orange",
-             aes(size-year),
+             aes(size=year),
              alpha = 0.5)
 ```
 
+```{r}
+gg_base + 
+  geom_col(fill = "orange",
+           color = "purple") +
+  geom_line(color = "green")
+```
 
+#### Multi-series ggplot graphs
 
+How to plot visitation for all California National Parks? We need aesthetic that lets us know how to gruop things, using grouping argument (group = ) or updating aesthetic based upon park_name.
+
+```{r}
+gg_np <- ggplot(data=ca_np, aes(x = year, y=visitors, group=park_name))
+
+gg_np +
+  geom_line(aes(color=park_name)) + theme_minimal()
+```
+
+#### Faceting ggplot graphs
+
+```{r}
+gg_np + 
+  geom_line(show.legend=FALSE) +
+  theme_light() + 
+  labs(x = "year", y = "annual visitors") + 
+  facet_wrap( ~ park_name)
+```
+
+#### Saving gg plot graphs
+
+Graphs can be saved with ggsave()
+
+Arguments:
+- width
+- height
+- dpi
+
+```{r}
+
+ggsave(here("figures", "np_graph.jpg"), dpi = 180, width=8, height = 7)
+```
