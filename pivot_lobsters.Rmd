@@ -73,8 +73,16 @@ siteyear_summary <-
             sd_size_mm = sd(size_mm, na.rm=TRUE),
             median_size_mm = median(size_mm, na.rm=TRUE)
 )
-
+  
 ggplot(siteyear_summary, 
        aes(x = year, y = median_size_mm, color=site)) + geom_line()
-)
+
+ggsave(here("figures", "lobsters-line.png"))
+
+ggplot(siteyear_summary,
+       aes(x = year, y = median_size_mm)) + geom_col() + facet_wrap(~site) 
+
+ggsave(here("figures", "lobsters-col.png"))
 ```
+
+
