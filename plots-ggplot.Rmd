@@ -9,7 +9,7 @@ output: html_document
 
 We are going to make plots in R and it's going to be amazing. 
 
-```{r libraries}
+```{r libraries, echo=FALSE}
 library(tidyverse)
 library(readxl)
 library(here)
@@ -33,3 +33,102 @@ gg_base + geom_point()
 gg_base + geom_col()
 gg_base + geom_area()
 ```
+
+Customizing ggplots:
+
+- color (point / line colors)
+- fill (fill color for objects w/ areas)
+- linetype (dashed, long dash)
+- pch (point style)
+- size (element size for points, line thickness)
+- alpha (element opacity)
+
+```{r custom1}
+gg_base +
+  geom_line(
+    color = "purple",
+    linetype = "dashed"
+  )
+```
+
+With points, pch (plotting character) can set the type of points.
+
+```{r custom2}
+gg_base +
+  geom_point(
+    color = "purple",
+    pch = 17,
+    size = 4,
+    alpha = 0.5
+  )
+```
+
+#### Mapping variables unto aesthetics
+
+If updating aesthetics based upon variables, put argument _inside_ of aes.
+If outside of aes, will be the same for all.
+
+```{r}
+gg_base + 
+  geom_point(
+    aes(size = visitors,
+        color = visitors),
+    alpha = 0.5
+  )
+```
+
+
+
+```{r}
+gg_base + 
+  geom_col (aes (fill=visitors))
+```
+
+#### Built-in themes for ggplot2
+
+- theme_light()
+- theme_minimal()
+- theme_bw()
+
+```{r}
+gg_base +
+  geom_point(
+    aes(size = visitors,
+        color = visitors),
+    alpha = 0.5
+  ) +
+  theme_minimal()
+```
+
+
+#### Updating axis labels and titles using labs()
+
+Can also update formatting of axis values using scales package.
+
+```{r}
+gg_base + 
+  geom_line(linetype = "dotted") + 
+  theme_bw() + 
+  labs(
+    x = "Year",
+    y = "Annual park visitors",
+    title = "Channel Islands NP Visitation", 
+    subtitle = "1963-2016"
+    )
+```
+
+
+#### Combining compatible geoms
+
+Can layer geoms on top of one another to customize
+
+```{r}
+gg_base + 
+  geom_line(color = "purple") +
+  geom_point(color = "orange",
+             aes(size-year),
+             alpha = 0.5)
+```
+
+
+
