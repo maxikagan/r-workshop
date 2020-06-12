@@ -7,4 +7,29 @@ output: html_document
 
 # Plots with ggplot2
 
-We are going to make plots in R and it's going to be amazing.
+We are going to make plots in R and it's going to be amazing. 
+
+```{r libraries}
+library(tidyverse)
+library(readxl)
+library(here)
+```
+
+```{r data1}
+ca_np <- read_csv(here("data", "ca_np.csv"))
+ci_np <- read_excel(here("data", "ci_np.xlsx"))
+```
+
+```{r first_plot}
+ggplot(data = ci_np, aes(x=year, y=visitors)) +
+  geom_line()
+```
+
+After we have made the plot an object, we can add / modify it with geom_*:
+
+```{r base_mod1}
+gg_base <- ggplot(data = ci_np, aes(x=year, y=visitors))
+gg_base + geom_point()
+gg_base + geom_col()
+gg_base + geom_area()
+```
