@@ -390,7 +390,27 @@ summary {
 </div>
 
 
-
+<pre class="r"><code>inverts &lt;- read_excel(here(&quot;data&quot;, &quot;inverts.xlsx&quot;))</code></pre>
+<div id="going-from-wider-to-longer-format." class="section level3">
+<h3>Going from wider to longer format.</h3>
+<p>Year variable is spread over three columns (so this is in “wide” format). If we want to get in “long” format (gather together observations spread over multiple columns), we can do this with tidyr::pivot_longer().</p>
+<p>We want to take the data from columns “2016”, “2017”, and “2018”, and make into two new columns: - Year - sp_count (number of species observed)</p>
+<pre class="r"><code>inverts_long &lt;- pivot_longer(data = inverts,
+                             cols = &#39;2016&#39;:&#39;2018&#39;,
+                             names_to = &quot;year&quot;,
+                             values_to = &quot;sp_count&quot;)</code></pre>
+<p>Class of “year” is actually character, not numeric. To make it numeric, we can use dplyr::mutate.</p>
+<pre class="r"><code>inverts_long &lt;- inverts_long %&gt;%
+  mutate(year = as.numeric(year))</code></pre>
+<div id="going-from-longer-to-wider-format." class="section level4">
+<h4>Going from longer to wider format.</h4>
+<p>Let’s say we want each species to be its own column (right now they are in a single column called “common_name”. To do this, we use pivots_longer.</p>
+<pre class="r"><code>inverts_wide &lt;- inverts_long %&gt;%
+  pivot_wider(names_from = common_name,
+              values_from = sp_count)</code></pre>
+<p>The species names are not in the most coder-friendly format, though, as we can see: .</p>
+</div>
+</div>
 
 
 
