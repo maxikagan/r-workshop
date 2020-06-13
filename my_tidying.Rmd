@@ -1,0 +1,18 @@
+---
+title: "Tidying"
+author: "Max Kagan"
+date: "6/13/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# Attach packages
+
+library(tidyverse)
+library(here)
+library(janitor)
+library(readxl)
+```
+
