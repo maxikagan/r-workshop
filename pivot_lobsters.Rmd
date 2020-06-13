@@ -86,3 +86,44 @@ ggsave(here("figures", "lobsters-col.png"))
 ```
 
 
+#### Summarizing by count
+
+Using dplyr::count() we can summarize by count. It will group_by selected variable, count, and then ungroup.
+
+```{r}
+
+lobsters %>%
+  count(site,year)
+
+## This is the same as:
+
+lobsters %>%
+  group_by(site,year) %>%
+  summarize( n = n()) %>%
+  ungroup()
+```
+
+#### Modifying data with mutate()
+
+Adding a column can be done with mutate() function. 
+
+For example, change data on lobster sizes in mm to meters:
+
+```{r}
+lobsters_detailed <- lobsters %>%
+  mutate(size_m = size_mm / 1000,
+         millenia = 2000,
+         observer = "Allison Horst")
+```
+
+
+#### Select
+
+Chose, retain, and move data by columns.
+
+Present data with only date, site, and size in meters:
+
+```{r}
+lobsters_detailed %>%
+  select(date, site, size_m)
+```
