@@ -1,0 +1,126 @@
+---
+title: "Filters and joins"
+author: "Max Kagan"
+date: "6/13/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(readxl)
+library(here)
+library(kableExtra)
+```
+
+This session:
+- filter() to subset data by rows
+- *_join() to merge data frames together (analagous to VLOOKUP)
+
+```{r input}
+fish <-read_csv(here("data","fish.csv"))
+kelp_abur <- read_excel(here("data", "kelp.xlsx"), sheet="abur") #Only read in sheet called "abur"
+```
+
+# dplyr::filter(): conditionally subset by rows
+
+## Filter rows by matching a single character string
+- Keep all data observations where fish == "garibaldi"
+
+```{r}
+fish_garibaldi <- fish %>%
+  filter(common_name == 'garibaldi')
+View(fish_garibaldi)
+```
+
+```{r}
+fish_mohk <- fish %>%
+  filter(site == "mohk")
+View(fish_mohk)
+```
+
+## Filter rows based upon numerical conditions using operators
+
+Observations where total_total count >= 50
+
+```{r}
+fish_over_50 <- fish %>%
+  filter(total_count >= 50)
+View(fish_over_50)
+```
+
+Using OR operators (this OR that OR that). Example: garibaldi or blacksmith or black surfperch
+
+Method 1: using | operator (logical OR)
+
+```{r}
+fish_3sp <- fish %>%
+  filter(common_name == "garibaldi" |
+           common_name == "blacksmith" | 
+           common_name == "black surfperch")
+View(fish_3sp)
+```
+
+Method 2: using %in% operator, as long as you are filtering within the same variable. 
+
+```{r}
+fish_3sp_v2 <- fish %>%
+  filter(common_name %in% c("garibaldi", "blacksmith", "black surfperch"))
+View(fish_3sp_v2)
+```
+
+```{r}
+fish_gar_2016 <- fish %>%
+  filter(year == 2016 | common_name == "garibaldi")
+View(fish_gar_2016)
+```
+
+## AND operator (i.e., both must be true)
+
+We use , (comma) or & (ampersand) for AND operator
+
+```{r}
+aque2018 <- fish %>%
+  filter(year == 2018, site == "aque")
+View(aque2018)
+```
+  
+The same thing can be done with & instead of ,
+
+```{r}
+aque2018_2 <- fish %>%
+  filter(year == 2018 & site == "aque")
+View(aque2018_2)
+```
+
+Or just two filter steps in sequence:
+
+```{r}
+aque_2018_3 <- fish %>%
+  filter(year ==2018) %>%
+  filter(site == "aque")
+View(aque_2018_3)
+```
+
+```{r}
+low_gb_wr <- fish %>%
+  filter(common_name %in% c("garibaldi", "rock wrasse") &
+                              total_count <= 10))
+View(low_gb_wr)
+```
+
+### Partial patterns using stringr::str_detect()
+
+Example: keep observations where the common name contains string pattern "black"
+
+```{r}
+fish_bl <- fish %>%
+  filter(str_detect(common_name, pattern="black"))
+View(fish_bl)
+```
+
+```{r}
+fish_it <- fish %>%
+  filter(str_detect(common_name, pattern="it", negate=TRUE)) #negate=TRUE inverts selection
+View(fish_it)
+```
