@@ -124,3 +124,53 @@ fish_it <- fish %>%
   filter(str_detect(common_name, pattern="it", negate=TRUE)) #negate=TRUE inverts selection
 View(fish_it)
 ```
+
+## dplyr::*_join() to merge data frames
+
+- full_join(): returns all rows and all columns from both x and y
+  - "safest" option
+- left_join(): return all rows from x, and all columns from x and y
+  - rows in x with no match in y will get NA values in new columns
+  - if multiple matches between x and y, all combinations of matches are returned
+- inner_join(): returns all rows from x where there are matching values in y, and all columns from x and y
+  - drops observations w/o match between merged data frames
+  
+In this module, we will use kelp_abur as "left" data frame and fish as our "right" data frame.
+
+```{r}
+abur_kelp_fish <- kelp_abur %>%
+  full_join(fish, by =  c("year", "site"))
+View(abur_kelp_fish)
+```
+
+```{r}
+kelp_fish_left <- kelp_abur %>%
+  left_join(fish, by = c("year", "site"))
+View(kelp_fish_left)
+```
+
+```{r}
+kelp_fish_injoin <- kelp_abur %>%
+  inner_join(fish, by = c("year", "site"))
+View(kelp_fish_injoin)
+```
+
+```{r}
+my_fish_join <- fish %>%
+  filter(site == "abur") %>%
+  left_join(kelp_abur, by= c("year","site")) %>%
+  mutate(fish_per_frond = total_count / total_fronds)
+View(my_fish_join)
+```
+
+## HTML table with kable() and kableExtra
+
+Can make nice table in HTML with knitr::kable and functions in kableExtra
+
+```{r}
+my_fish_join %>%
+  kable() %>%
+  kable_styling(bootstrap_options = "striped",
+                full_width=FALSE)
+```
+Other options available by Googling kableExtra.
